@@ -6,17 +6,16 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
-import abc
-import collections
-import copy
-from itertools import permutations
-import pickle
-import sys
-from weakref import proxy
+# import abc
+# import collections
+# import copy
+# from itertools import permutations
+# import pickle
+# import sys
+# from weakref import proxy
 from random import choice
 from django.test import TestCase
-
-from caching import utils
+from lru2layer import utils
 
 def capture(*args, **kw):
     """capture all positional and keyword arguments"""
