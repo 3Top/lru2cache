@@ -1,7 +1,7 @@
 =========
 lru2layer
 =========
-A _`least recently used (LRU)`: http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used
+A _`least recently used (LRU)<http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of lru_cache
 
 lru2layer is a decorator that can be used with any user function or method to
@@ -43,10 +43,10 @@ for the shared cache would need to be obtained from the shared cache.
 
 Clearing Instance Cache
 =======================
-the cache and statistics associated with a function or method can be cleared with:
-```python
-f.cache_clear()
-```
+the cache and statistics associated with a function or method can be cleared with::
+
+    f.cache_clear()
+
 
 Clearing Shared Cache
 =====================
@@ -83,4 +83,4 @@ invalidate and the calling the wrapped function
 
 Accessing the Function without Cache
 ====================================
-The un-cached underlying function can always be accessed with `f.__wrapped__`.
+The un-cached underlying function can always be accessed with ``f.__wrapped__``.
