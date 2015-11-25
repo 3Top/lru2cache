@@ -20,13 +20,13 @@ retrieve the value without the expense of requesting it from a shared cache,
 while still allowing instances in different threads to access the result from
 the shared cache.
 
-## Caching arguments & keywords
+## Arguments & Keywords
 
 Arguments to the cached function must be hashable. If available the spooky hash
 function will be used for generating keys, otherwise it will default back to
 the slower, hashlib.sha256.
 
-### typed
+### Typed Arguments
 If *typed* is True, arguments of different types will be cached separately.
 For example, f(3.0) and f(3) will be treated as distinct calls with
 distinct results.  In the case of methods, the first argument(self) is always
@@ -53,7 +53,7 @@ lru2layer_cache.clear()
 ```
 
 ## Invalidating Cached Results
-The uncached underlying function can always be accessed with f.__wrapped__.
+The uncached underlying function can always be accessed with `f.__wrapped__`.
 
 To invalidate the cache for a specific set of arguments, including the instance
 one can pass the same arguments to invalidate the both L1 and L2 caches.
@@ -71,7 +71,6 @@ class foo():
         ...
 
 foo.f(a, b)
-
 foo.f.invalidate(foo, a, b)
 ```
 
