@@ -1,8 +1,7 @@
 =========
 lru2layer
 =========
-A `least recently used (LRU)'__
-.. __: http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used
+A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of lru_cache
 
 lru2layer is a decorator that can be used with any user function or method to
