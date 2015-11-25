@@ -4,8 +4,11 @@ from functools import update_wrapper
 from threading import RLock
 import logging
 import types
-from spooky import hash128
-# from hashlib import sha256
+try:
+    from spooky import hash128 as hash
+except:
+    from hashlib import sha256
+    hash = lambda x: sha256(x).hexdigest()
 import inspect
 
 
@@ -43,8 +46,7 @@ def _make_key(user_function, args, kwds, typed,
         key.append(tuple(type(v) for v in args))
         if kwds:
             key[-1] += tuple(type(v) for k, v in sorted_items)
-    return hash128(str(key))
-    # return sha256(str(key)).hexdigest()
+    return hash(str(key))
 
 
 
