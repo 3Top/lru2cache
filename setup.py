@@ -39,6 +39,8 @@ setup(
         #   5 - Production/Stable
         'Development Status :: 3 - Alpha',
 
+        'Operating System :: OS Independent',
+
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
@@ -103,7 +105,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'sample=sample:main',
+            'lru2layer=lru2layer:main',
         ],
     },
 )

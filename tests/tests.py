@@ -133,6 +133,11 @@ class TestLRU(TestCase):
         self.assertEqual(fib.cache_info(),
             utils._CacheInfo(hits=0, misses=0, maxsize=None, currsize=0))
 
+    ######################################################################
+    '''
+    Uncomment to enable testing with django cache
+    '''
+    ######################################################################
     # def test_l2_with_lru_maxsize_zero(self):
     #     @utils.lruL2Cache(maxsize=0)
     #     def fib(n):
@@ -147,6 +152,13 @@ class TestLRU(TestCase):
     #     self.assertEqual(fib.cache_info(),
     #         utils._CacheInfo(hits=0, misses=0, maxsize=0, currsize=0))
 
+
+
+    ######################################################################
+    '''
+    These tests require remediation
+    '''
+    ######################################################################
     # def test_lru_with_maxsize_negative(self):
     #     @utils.lruL2Cache(maxsize=-10)
     #     def eq(n):
@@ -171,6 +183,7 @@ class TestLRU(TestCase):
     #         # Verify that the previous exception did not result in a cached entry
     #         with self.assertRaises(IndexError):
     #             func(15)
+
 
     def test_lru_with_types(self):
         for maxsize in (None, 128):
@@ -249,6 +262,11 @@ class TestLRU(TestCase):
         self.assertEqual(b.f.cache_info(), X.f.cache_info())
         self.assertEqual(c.f.cache_info(), X.f.cache_info())
 
+    ######################################################################
+    '''
+    These tests require python 3
+    '''
+    ######################################################################
     # def test_pickle(self):
     #     cls = self.__class__
     #     for f in cls.cached_func[0], cls.cached_meth, cls.cached_staticmeth:
