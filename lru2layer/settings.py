@@ -47,9 +47,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'd_lru2layer.urls'
+ROOT_URLCONF = 'lru2layer.urls'
 
-WSGI_APPLICATION = 'd_lru2layer.wsgi.application'
+WSGI_APPLICATION = 'lru2layer.wsgi.application'
 
 
 # Database
@@ -80,3 +80,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CACHES = {
+    'dummy': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+}

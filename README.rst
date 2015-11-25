@@ -30,26 +30,31 @@ the slower, hashlib.sha256.
 
 Typed Arguments
 ---------------
-If *typed* is True, arguments of different types will be cached separately.
+If *typed* is ``True``, arguments of different types will be cached separately.
 For example, f(3.0) and f(3) will be treated as distinct calls with
 distinct results.  In the case of methods, the first argument(self) is always
 typed.
 
-Cache Statistics
+Cache Management
 ================
+Since the lru2layer decorator does not provide a timeout for its cache although
+it provides other mechanisms for programatically managing the cache.
+
+Cache Statistics
+----------------
 As with lru_cache, one can view the cache statistics named tuple (hits, misses,
 maxsize, currsize) for a specific instantiation with f.cache_info(). Statistics
 for the shared cache would need to be obtained from the shared cache.
 
 Clearing Instance Cache
-=======================
+-----------------------
 the cache and statistics associated with a function or method can be cleared with::
 
     f.cache_clear()
 
 
 Clearing Shared Cache
-=====================
+---------------------
 If you are using a named cache it can easily be cleared with the following::
 
     from django.core.cache import get_cache
@@ -59,7 +64,7 @@ If you are using a named cache it can easily be cleared with the following::
 
 
 Invalidating Cached Results
-===========================
+---------------------------
 To invalidate the cache for a specific set of arguments, including the instance
 one can pass the same arguments to invalidate the both L1 and L2 caches::
 
@@ -77,10 +82,10 @@ following::
     foo.f.invalidate(foo, a, b)
 
 Refreshing the Cache
-====================
+--------------------
 This is not yet implemented as function but can be accomplished by first calling
 invalidate and the calling the wrapped function
 
 Accessing the Function without Cache
-====================================
+------------------------------------
 The un-cached underlying function can always be accessed with ``f.__wrapped__``.
