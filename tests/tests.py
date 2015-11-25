@@ -43,7 +43,7 @@ class TestLRU(TestCase):
             x, y = choice(domain), choice(domain)
             actual = f(x, y)
             expected = orig(x, y)
-            print u"{i}: 3 * {x} + {y} = {actual}, expected: {expected}".format(i=i, x=x, y=y, actual=actual, expected=expected)
+            # print u"{i}: 3 * {x} + {y} = {actual}, expected: {expected}".format(i=i, x=x, y=y, actual=actual, expected=expected)
             self.assertEqual(actual, expected)
         hits, misses, maxsize, currsize = f.cache_info()
         self.assertTrue(hits > misses)
