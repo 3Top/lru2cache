@@ -138,19 +138,19 @@ class TestLRU(TestCase):
     Uncomment to enable testing with django cache
     '''
     ######################################################################
-    # def test_l2_with_lru_maxsize_zero(self):
-    #     @utils.lruL2Cache(maxsize=0)
-    #     def fib(n):
-    #         if n < 2:
-    #             return n
-    #         return fib(n-1) + fib(n-2)
-    #     self.assertEqual([fib(n) for n in range(16)],
-    #         [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610])
-    #     self.assertEqual(fib.cache_info(),
-    #         utils._CacheInfo(hits=0, misses=16, maxsize=0, currsize=0))
-    #     fib.cache_clear()
-    #     self.assertEqual(fib.cache_info(),
-    #         utils._CacheInfo(hits=0, misses=0, maxsize=0, currsize=0))
+    def test_l2_with_lru_maxsize_zero(self):
+        @utils.lruL2Cache(maxsize=0)
+        def fib(n):
+            if n < 2:
+                return n
+            return fib(n-1) + fib(n-2)
+        self.assertEqual([fib(n) for n in range(16)],
+            [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610])
+        self.assertEqual(fib.cache_info(),
+            utils._CacheInfo(hits=0, misses=16, maxsize=0, currsize=0))
+        fib.cache_clear()
+        self.assertEqual(fib.cache_info(),
+            utils._CacheInfo(hits=0, misses=0, maxsize=0, currsize=0))
 
 
 

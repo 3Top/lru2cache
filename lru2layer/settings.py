@@ -82,10 +82,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CACHES = {
-    'dummy': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    },
     'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': 1200,
+    },
+    'dummy': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     },
 }

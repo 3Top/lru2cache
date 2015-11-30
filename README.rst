@@ -8,6 +8,9 @@ lru2layer
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of lru_cache
 
+This was developed by `3Top, Inc. <http://www.3top.com/team>`_ for use with
+our ranking and recommendation platform, http://www.3top.com.
+
 lru2layer is a decorator that can be used with any user function or method to
 cache the most recent results in a local cache.  It can alse be used with
 django's cache framework to cache results in a shared cache.
@@ -93,3 +96,27 @@ invalidate and the calling the wrapped function
 Accessing the Function without Cache
 ------------------------------------
 The un-cached underlying function can always be accessed with ``f.__wrapped__``.
+
+Background and Development
+--------------------------
+At `3Top <http://www.3top.com/>`_ We needed a way to improve performance of
+slow queries, not just those using the Django ORM, but also for queries to
+other data stores and services.  We started off with a simpler centralized
+caching solution using Memcached, but even those queries, when called frequently,
+can start to cause delays.  Therefore we sought a means of caching at two layers.
+
+Initially we looked at the possibility of using two different mechanisms but
+we quickly saw the advantage of maintaining the same set of keys for both
+caches and decided to create our own mechanism.
+
+We used the python 3 ``functools.lru_cache()`` decorator as starting point for
+developing an in instance cache with LRU capabilities.  However we needed to
+ensure the keys would also be unique enough to use with a shared cache.  we
+leverage Django's excellent cache framework for managing the layer 2 cache.
+This allows the use of any cache supported by Django.
+
+Tests
+-----
+As a starting point we have incorporated most of the tests for ``lru_cache()`` with
+minor changes to make them work with python 2.7 and will continue to add tests
+to take into account the additional functionality provided by this decorator.
