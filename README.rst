@@ -49,16 +49,17 @@ it provides other mechanisms for programatically managing the cache.
 
 Cache Statistics
 ----------------
-As with lru_cache, one can view the cache statistics named tuple (hits, misses,
-maxsize, currsize) for a specific instantiation with f.cache_info(). Statistics
-for the shared cache would need to be obtained from the shared cache.
+As with lru_cache, one can view the cache statistics via a named tuple
+(l1_hits, l1_misses, l2_hits, l2_misses, l1_maxsize, l1_currsize), with
+``f.cache_info()``. These stats are stored within an instance, and therefore
+are specific to that instance. Cumulative statistics for the shared cache would
+need to be obtained from the shared cache.
 
 Clearing Instance Cache
 -----------------------
 the cache and statistics associated with a function or method can be cleared with::
 
     f.cache_clear()
-
 
 Clearing Shared Cache
 ---------------------
@@ -80,12 +81,6 @@ one can pass the same arguments to invalidate the both L1 and L2 caches::
 in the case of a method you do need to explicitly pass the instance as in the
 following::
 
-    class foo():
-        ...
-
-        def f(a, b):
-            ...
-    foo.f(a, b)
     foo.f.invalidate(foo, a, b)
 
 Refreshing the Cache
@@ -117,6 +112,7 @@ This allows the use of any cache supported by Django.
 
 Tests
 -----
-As a starting point we have incorporated most of the tests for ``lru_cache()`` with
-minor changes to make them work with python 2.7 and will continue to add tests
-to take into account the additional functionality provided by this decorator.
+As a starting point incorporated most of the tests for ``lru_cache()``
+with minor changes to make them work with python 2.7 and incorporate the
+l2_cache stats. We will continue to add tests to validate the additional
+functionality provided by this decorator.
