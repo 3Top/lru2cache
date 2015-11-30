@@ -51,21 +51,16 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
 
-        'Framework :: Django :: 1.4'
-        'Framework :: Django :: 1.5'
         'Framework :: Django :: 1.6'
         'Framework :: Django :: 1.7'
         'Framework :: Django :: 1.8'
-        'Framework :: Django :: 1.9'
     ],
 
     # What does your project relate to?
-    keywords='cache caching memoize lru layered',
+    keywords='cache caching memoize lru layered layer2 l1 l2 decorator fifo',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
