@@ -17,9 +17,7 @@ install:
 
 matrix:
     exclude:
-    - python: 3.4
-      env: DJANGO_VERSION=1.6
-    - python: 3.5
+    - python: "3.5"
       env: DJANGO_VERSION=1.6
       env: DJANGO_VERSION=1.7
 
