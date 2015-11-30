@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import unicode_literals
 """
 This file demonstrates writing tests using the unittest module. These will pass
 when you run "manage.py test".
@@ -50,7 +50,7 @@ class TestLRU(TestCase):
             x, y = choice(domain), choice(domain)
             actual = f(x, y)
             expected = orig(x, y)
-            # print u"{i}: 3 * {x} + {y} = {actual}, expected: {expected}".format(i=i, x=x, y=y, actual=actual, expected=expected)
+            # print "{i}: 3 * {x} + {y} = {actual}, expected: {expected}".format(i=i, x=x, y=y, actual=actual, expected=expected)
             self.assertEqual(actual, expected)
         l1_hits, l1_misses, l2_hits, l2_misses, l1_maxsize, l1_currsize = f.cache_info()
         self.assertTrue(l1_hits > l1_misses)

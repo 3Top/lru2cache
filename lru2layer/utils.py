@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.core.cache import get_cache
 from collections import namedtuple
 from functools import update_wrapper
@@ -27,13 +28,13 @@ def _make_key(user_function, args, kwds, typed,
         # if inspect.ismethod(user_function):
             instance = args.pop(0)
             try:
-                key = [u"{c}{i}".format(c=instance.__class__, i=getattr(instance, inst_attr)), user_function.__name__]
+                key = ["{c}{i}".format(c=instance.__class__, i=getattr(instance, inst_attr)), user_function.__name__]
             except:
-                key = [u"{c}{i}".format(c=instance.__class__, i=instance.__hash__()), user_function.__name__]
+                key = ["{c}{i}".format(c=instance.__class__, i=instance.__hash__()), user_function.__name__]
         else:
-            key = [u"", user_function.__name__]
+            key = ["", user_function.__name__]
     else:
-        key = [u"", user_function.__name__]
+        key = ["", user_function.__name__]
     if args:
         key.append(tuple(args))
     if kwds:
@@ -171,21 +172,21 @@ def lruL2Cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defa
             
         def l2wrapper(key, user_function, none_cache, *args, **kwds):
             # try:
-                # logger.debug(u"instance:{instance}, func:{func}, key:{key}, none_cache:{none_cache}".format(instance=instance,func=user_function,key=key,none_cache=none_cache))
+                # logger.debug("instance:{instance}, func:{func}, key:{key}, none_cache:{none_cache}".format(instance=instance,func=user_function,key=key,none_cache=none_cache))
             # except TypeError:
-                # logger.debug(u"instance:{instance}, func:{func}, key:{key}, none_cache:{none_cache}".format(instance="None",func=user_function,key=key,none_cache=none_cache))
+                # logger.debug("instance:{instance}, func:{func}, key:{key}, none_cache:{none_cache}".format(instance="None",func=user_function,key=key,none_cache=none_cache))
             result = l2cache.get(key)
             if result is not None:
                 stats[L2_HITS] += 1
-                # logger.debug(u"Returning result from cache:{result}".format(result=result))
+                # logger.debug("Returning result from cache:{result}".format(result=result))
                 return result
 
             result = user_function(*args, **kwds)
-            # logger.debug(u"Returning result from function:{result}".format(result=result))
+            # logger.debug("Returning result from function:{result}".format(result=result))
             if none_cache or result is not None:
                 stats[L2_MISSES] += 1
                 l2cache.add(key, result)
-                # logger.debug(u"Added result to cache from function:{result}".format(result=result))
+                # logger.debug("Added result to cache from function:{result}".format(result=result))
             return result   
 
         def cache_info():
@@ -206,17 +207,17 @@ def lruL2Cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defa
         def invalidate(*args, **kwds):
             """Delete a specific cache key if it exists"""
             key = make_key(user_function, args, kwds, typed, inst_attr=inst_attr)
-            # logger.debug(u"generated key {key} for {s}, {uf}, {a}, {k}, {t}".format(key=key, s=self, uf=user_function,a=args,k=kwds,t=typed))
+            # logger.debug("generated key {key} for {s}, {uf}, {a}, {k}, {t}".format(key=key, s=self, uf=user_function,a=args,k=kwds,t=typed))
             try:
-                # logger.debug(u"deleting instance cache with key {key}".format(key=key))
+                # logger.debug("deleting instance cache with key {key}".format(key=key))
                 del cache[key]
-                # logger.debug(u"done")
+                # logger.debug("done")
             except:
                 pass
             try:
-                # logger.debug(u"deleting shared cache with key {key}".format(key=key))
+                # logger.debug("deleting shared cache with key {key}".format(key=key))
                 l2cache.delete(key)
-                # logger.debug(u"done")
+                # logger.debug("done")
             except:
                 pass
             
