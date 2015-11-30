@@ -147,7 +147,7 @@ class TestLRU(TestCase):
         self.assertEqual([fib(n) for n in range(16)],
             [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610])
         self.assertEqual(fib.cache_info(),
-            utils._CacheInfo(hits=0, misses=44, maxsize=0, currsize=0))
+            utils._CacheInfo(hits=0, misses=16, maxsize=0, currsize=0))
         fib.cache_clear()
         self.assertEqual(fib.cache_info(),
             utils._CacheInfo(hits=0, misses=0, maxsize=0, currsize=0))
