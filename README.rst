@@ -18,7 +18,7 @@ django's cache framework to cache results in a shared cache.
 The first layer of caching is stored in a dict within the instance of the
 function or method. Each instance stores up to maxsize results based on args
 and kwargs passed to it.  The discarding of the LRU cached values is handled by
-the lru2layer decorator
+the lru2layer decorator.
 
 The second layer of caching requires a shared cache that behaves the same as
 Django's cache framework.  In this case it is assumed that any LRU mechanism
@@ -104,11 +104,11 @@ Initially we looked at the possibility of using two different mechanisms but
 we quickly saw the advantage of maintaining the same set of keys for both
 caches and decided to create our own mechanism.
 
-We used the python 3 ``functools.lru_cache()`` decorator as starting point for
-developing an in instance cache with LRU capabilities.  However we needed to
-ensure the keys would also be unique enough to use with a shared cache.  we
-leverage Django's excellent cache framework for managing the layer 2 cache.
-This allows the use of any cache supported by Django.
+We used a backport python 3 ``functools.lru_cache()`` decorator as a starting
+point for developing an in instance cache with LRU capabilities.  However we
+needed to ensure the keys would also be unique enough to use with a shared
+cache. We leverage Django's excellent cache framework for managing the layer 2
+cache. This allows the use of any shared cache supported by Django.
 
 Tests
 -----

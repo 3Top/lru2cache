@@ -140,11 +140,6 @@ class TestLRU(TestCase):
         self.assertEqual(fib.cache_info(),
             utils._CacheInfo(l1_hits=0, l1_misses=0, l2_hits=0, l2_misses=0, l1_maxsize=None, l1_currsize=0))
 
-    ######################################################################
-    '''
-    Uncomment to enable testing with django cache
-    '''
-    ######################################################################
     def test_l2_with_lru_l1_maxsize_zero(self):
         @utils.lruL2Cache(l1_maxsize=0)
         def fib(n):
@@ -160,7 +155,20 @@ class TestLRU(TestCase):
         self.assertEqual(fib.cache_info(),
             utils._CacheInfo(l1_hits=0, l1_misses=0, l2_hits=0, l2_misses=0, l1_maxsize=0, l1_currsize=0))
 
+    # tests cache invalidation for specific arguments
+    def test_invalidations_with_l1_maxsize_none(self):
+        self.n = 2
+        @utils.lruL2Cache(l1_maxsize=None, l2cache_name='dummy')
+        def f(x):
+            return x * self.n
 
+        for self.n in range(2,10):
+            for i in range(1,10):
+                if not self.n & 1:      # Test if even
+                    f.invalidate(i)     # If even invalidate the cache and get actual results
+                self.assertFalse(f(i) & 1)  # Assert result is not odd
+        self.assertEqual(f.cache_info(),
+            utils._CacheInfo(l1_hits=36, l1_misses=36, l2_hits=0, l2_misses=36, l1_maxsize=None, l1_currsize=9))
 
     ######################################################################
     '''
