@@ -2,11 +2,11 @@
 lru2cache
 =========
 
-.. image:: https://travis-ci.org/3Top/lru2cache.svg?branch=master
+.. image:: https://travis-ci.org/3Top/lru2layer.svg?branch=master
     :target: https://travis-ci.org/3Top/lru2layer
     :alt: Travis-CI
 
-.. image:: https://codeclimate.com/github/3Top/lru2cache/badges/gpa.svg
+.. image:: https://codeclimate.com/github/3Top/lru2layer/badges/gpa.svg
    :target: https://codeclimate.com/github/3Top/lru2layer
    :alt: Code Climate
 
