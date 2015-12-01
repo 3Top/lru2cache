@@ -4,6 +4,11 @@ lru2layer
 
 .. image:: https://travis-ci.org/3Top/lru2layer.svg?branch=master
     :target: https://travis-ci.org/3Top/lru2layer
+    :alt: Travis-CI
+
+.. image:: https://codeclimate.com/github/3Top/lru2layer/badges/gpa.svg
+   :target: https://codeclimate.com/github/3Top/lru2layer
+   :alt: Code Climate
 
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of lru_cache
