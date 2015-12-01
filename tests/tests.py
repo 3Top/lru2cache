@@ -15,7 +15,7 @@ Replace this with more appropriate tests for your application.
 # from weakref import proxy
 from random import choice
 from django.test import TestCase
-from lru2layer import utils
+from lru2cache import utils
 from django.core.cache import get_cache
 
 l2 = get_cache('default')
@@ -35,7 +35,7 @@ class TestLRU(TestCase):
     def test_lru(self):
         def orig(x, y):
             return 3 * x + y
-        f = utils.lruL2Cache(l1_maxsize=20, l2cache_name='dummy')(orig)
+        f = utils.lru2cache(l1_maxsize=20, l2cache_name='dummy')(orig)
         l1_hits, l1_misses, l2_hits, l2_misses, l1_maxsize, l1_currsize = f.cache_info()
         self.assertEqual(l1_maxsize, 20)
         self.assertEqual(l1_currsize, 0)
@@ -78,7 +78,7 @@ class TestLRU(TestCase):
 
         # test size zero (which means "never-cache")
         global f_cnt
-        @utils.lruL2Cache(l1_maxsize=0, l2cache_name='dummy')
+        @utils.lru2cache(l1_maxsize=0, l2cache_name='dummy')
         def f():
             global f_cnt
             f_cnt += 1
@@ -94,7 +94,7 @@ class TestLRU(TestCase):
         self.assertEqual(l1_currsize, 0)
 
         # test size one
-        @utils.lruL2Cache(l1_maxsize=1, l2cache_name='dummy')
+        @utils.lru2cache(l1_maxsize=1, l2cache_name='dummy')
         def f():
             global f_cnt
             f_cnt += 1
@@ -110,7 +110,7 @@ class TestLRU(TestCase):
         self.assertEqual(l1_currsize, 1)
 
         # test size two
-        @utils.lruL2Cache(l1_maxsize=2, l2cache_name='dummy')
+        @utils.lru2cache(l1_maxsize=2, l2cache_name='dummy')
         def f(x):
             global f_cnt
             f_cnt += 1
@@ -127,7 +127,7 @@ class TestLRU(TestCase):
         self.assertEqual(l1_currsize, 2)
 
     def test_lru_with_l1_maxsize_none(self):
-        @utils.lruL2Cache(l1_maxsize=None, l2cache_name='dummy')
+        @utils.lru2cache(l1_maxsize=None, l2cache_name='dummy')
         def fib(n):
             if n < 2:
                 return n
@@ -141,7 +141,7 @@ class TestLRU(TestCase):
             utils._CacheInfo(l1_hits=0, l1_misses=0, l2_hits=0, l2_misses=0, l1_maxsize=None, l1_currsize=0))
 
     def test_l2_with_lru_l1_maxsize_zero(self):
-        @utils.lruL2Cache(l1_maxsize=0)
+        @utils.lru2cache(l1_maxsize=0)
         def fib(n):
             if n < 2:
                 return n
@@ -158,7 +158,7 @@ class TestLRU(TestCase):
     # tests cache invalidation for specific arguments
     def test_invalidations_with_l1_maxsize_none(self):
         self.n = 2
-        @utils.lruL2Cache(l1_maxsize=None, l2cache_name='dummy')
+        @utils.lru2cache(l1_maxsize=None, l2cache_name='dummy')
         def f(x):
             return x * self.n
 
@@ -176,7 +176,7 @@ class TestLRU(TestCase):
     '''
     ######################################################################
     # def test_lru_with_l1_maxsize_negative(self):
-    #     @utils.lruL2Cache(l1_maxsize=-10)
+    #     @utils.lru2cache(l1_maxsize=-10)
     #     def eq(n):
     #         return n
     #     for i in (0, 1):
@@ -189,7 +189,7 @@ class TestLRU(TestCase):
     #     # creating a hard-to-read chained exception.
     #     # http://bugs.python.org/issue13177
     #     for l1_maxsize in (None, 128):
-    #         @utils.lruL2Cache(l1_maxsize=l1_maxsize, l2cache_name='dummy')
+    #         @utils.lru2cache(l1_maxsize=l1_maxsize, l2cache_name='dummy')
     #         def func(i):
     #             return 'abc'[i]
     #         self.assertEqual(func(0), 'a')
@@ -203,7 +203,7 @@ class TestLRU(TestCase):
 
     def test_lru_with_types(self):
         for l1_maxsize in (None, 128):
-            @utils.lruL2Cache(l1_maxsize=l1_maxsize, typed=True, l2cache_name='dummy')
+            @utils.lru2cache(l1_maxsize=l1_maxsize, typed=True, l2cache_name='dummy')
             def square(x):
                 return x * x
             self.assertEqual(square(3), 9)
@@ -218,7 +218,7 @@ class TestLRU(TestCase):
             self.assertEqual(square.cache_info().l1_misses, 4)
 
     def test_lru_with_keyword_args(self):
-        @utils.lruL2Cache(l2cache_name='dummy')
+        @utils.lru2cache(l2cache_name='dummy')
         def fib(n):
             if n < 2:
                 return n
@@ -234,7 +234,7 @@ class TestLRU(TestCase):
             utils._CacheInfo(l1_hits=0, l1_misses=0, l2_hits=0, l2_misses=0, l1_maxsize=128, l1_currsize=0))
 
     def test_lru_with_keyword_args_l1_maxsize_none(self):
-        @utils.lruL2Cache(l1_maxsize=None, l2cache_name='dummy')
+        @utils.lru2cache(l1_maxsize=None, l2cache_name='dummy')
         def fib(n):
             if n < 2:
                 return n
@@ -250,7 +250,7 @@ class TestLRU(TestCase):
     def test_lru_method(self):
         class X(int):
             f_cnt = 0
-            @utils.lruL2Cache(l1_maxsize=2, l2cache_name = 'dummy')
+            @utils.lru2cache(l1_maxsize=2, l2cache_name = 'dummy')
             def f(self, x):
                 self.f_cnt += 1
                 return x*10+self
@@ -306,7 +306,7 @@ class TestLRU(TestCase):
     #             self.assertIs(f_copy, f)
 
 
-@utils.lruL2Cache(l2cache_name = 'dummy')
+@utils.lru2cache(l2cache_name = 'dummy')
 def py_cached_func(x, y):
     return 3 * x + y
 
@@ -315,12 +315,12 @@ class TestLRUPy(TestLRU):
     module = utils
     cached_func = py_cached_func,
 
-    @utils.lruL2Cache(l2cache_name = 'dummy')
+    @utils.lru2cache(l2cache_name = 'dummy')
     def cached_meth(self, x, y):
         return 3 * x + y
 
     @staticmethod
-    @utils.lruL2Cache(l2cache_name = 'dummy')
+    @utils.lru2cache(l2cache_name = 'dummy')
     def cached_staticmeth(x, y):
         return 3 * x + y
 

@@ -1,13 +1,13 @@
 =========
-lru2layer
+lru2cache
 =========
 
-.. image:: https://travis-ci.org/3Top/lru2layer.svg?branch=master
-    :target: https://travis-ci.org/3Top/lru2layer
+.. image:: https://travis-ci.org/3Top/lru2cache.svg?branch=master
+    :target: https://travis-ci.org/3Top/lru2cache
     :alt: Travis-CI
 
-.. image:: https://codeclimate.com/github/3Top/lru2layer/badges/gpa.svg
-   :target: https://codeclimate.com/github/3Top/lru2layer
+.. image:: https://codeclimate.com/github/3Top/lru2cache/badges/gpa.svg
+   :target: https://codeclimate.com/github/3Top/lru2cache
    :alt: Code Climate
 
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
@@ -16,14 +16,14 @@ A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Leas
 This was developed by `3Top, Inc. <http://www.3top.com/team>`_ for use with
 our ranking and recommendation platform, http://www.3top.com.
 
-lru2layer is a decorator that can be used with any user function or method to
+lru2cache is a decorator that can be used with any user function or method to
 cache the most recent results in a local cache.  It can alse be used with
 django's cache framework to cache results in a shared cache.
 
 The first layer of caching is stored in a dict within the instance of the
 function or method. Each instance stores up to maxsize results based on args
 and kwargs passed to it.  The discarding of the LRU cached values is handled by
-the lru2layer decorator.
+the lru2cache decorator.
 
 The second layer of caching requires a shared cache that behaves the same as
 Django's cache framework.  In this case it is assumed that any LRU mechanism
@@ -49,7 +49,7 @@ typed.
 
 Cache Management
 ================
-Since the lru2layer decorator does not provide a timeout for its cache although
+Since the lru2cache decorator does not provide a timeout for its cache although
 it provides other mechanisms for programatically managing the cache.
 
 Cache Statistics
@@ -72,8 +72,8 @@ If you are using a named cache it can easily be cleared with the following::
 
     from django.core.cache import get_cache
 
-    lru2layer_cache = get_cache('lru2layer')
-    lru2layer_cache.clear()
+    lru2cache_cache = get_cache('lru2cache')
+    lru2cache_cache.clear()
 
 
 Invalidating Cached Results

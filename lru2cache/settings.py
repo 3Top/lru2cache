@@ -46,9 +46,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'lru2layer.urls'
+ROOT_URLCONF = 'lru2cache.urls'
 
-WSGI_APPLICATION = 'lru2layer.wsgi.application'
+WSGI_APPLICATION = 'lru2cache.wsgi.application'
 
 
 # Database

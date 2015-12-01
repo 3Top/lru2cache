@@ -51,7 +51,7 @@ def _make_key(user_function, args, kwds, typed,
 
 
 
-def lruL2Cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='default', inst_attr='id'):
+def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='default', inst_attr='id'):
     """Least-recently-used cache decorator.
 
     If *l1_maxsize* is set to None, the LRU features are disabled and the cache
