@@ -13,8 +13,6 @@ env:
 install:
     - pip install -q Django==$DJANGO_VERSION
     - pip install -q pylibmc
-    - pip install -q coverage 4.0.3
-    - pip install -q coveralls
     - python setup.py -q install
 
 matrix:
@@ -26,9 +24,6 @@ matrix:
 
 script:
     - python manage.py test tests
-    - coverage run --source=lru2layer manage.py test tests
 
 services:
     - memcached
-
-after_success: coveralls
