@@ -3,11 +3,11 @@ lru2cache
 =========
 
 .. image:: https://travis-ci.org/3Top/lru2cache.svg?branch=master
-    :target: https://travis-ci.org/3Top/lru2cache
+    :target: https://travis-ci.org/3Top/lru2layer
     :alt: Travis-CI
 
 .. image:: https://codeclimate.com/github/3Top/lru2cache/badges/gpa.svg
-   :target: https://codeclimate.com/github/3Top/lru2cache
+   :target: https://codeclimate.com/github/3Top/lru2layer
    :alt: Code Climate
 
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
