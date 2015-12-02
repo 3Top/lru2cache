@@ -10,6 +10,12 @@ lru2cache
    :target: https://codeclimate.com/github/3Top/lru2layer
    :alt: Code Climate
 
+
+.. image:: https://coveralls.io/repos/3Top/lru2cache/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/3Top/lru2cache?branch=master
+  :alt: Coveralls.io
+
+
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of lru_cache
 
