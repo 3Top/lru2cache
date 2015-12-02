@@ -2,8 +2,8 @@
 lru2cache
 =========
 
-.. image:: https://travis-ci.org/3Top/lru2layer.svg?branch=master
-    :target: https://travis-ci.org/3Top/lru2layer
+.. image:: https://travis-ci.org/3Top/lru2cache.svg?branch=master
+    :target: https://travis-ci.org/3Top/lru2cache
     :alt: Travis-CI
 
 .. image:: https://codeclimate.com/github/3Top/lru2layer/badges/gpa.svg
