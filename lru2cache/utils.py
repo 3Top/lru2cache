@@ -158,8 +158,10 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
                             oldvalue = root[RESULT]
                             root[KEY] = root[RESULT] = None
                             # now update the cache dictionary for the new links
-                            del cache[oldkey]
-                            cache[key] = oldroot
+                            try:
+                                del cache[oldkey]
+                            finally:
+                                cache[key] = oldroot
                         else:
                             # put result in a new link at the front of the list
                             last = root[PREV]
