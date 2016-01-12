@@ -1,0 +1,14 @@
+MANIFEST.in
+README.rst
+setup.cfg
+setup.py
+lru2cache/__init__.py
+lru2cache/settings.py
+lru2cache/urls.py
+lru2cache/utils.py
+lru2cache/wsgi.py
+lru2cache.egg-info/PKG-INFO
+lru2cache.egg-info/SOURCES.txt
+lru2cache.egg-info/dependency_links.txt
+lru2cache.egg-info/requires.txt
+lru2cache.egg-info/top_level.txt
