@@ -12,10 +12,12 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-*.egg-info/
+# *.egg-info/
 .installed.cfg
 *.egg
 *.swp
+build/*
+dist/*
 
 # Installer logs
 pip-log.txt
