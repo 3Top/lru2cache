@@ -4,7 +4,6 @@ from collections import namedtuple
 from functools import update_wrapper
 from threading import RLock
 import logging
-import types
 try:
     from spooky import hash128 as hash
 except:
@@ -23,26 +22,35 @@ def _make_key(user_function, args, kwds, typed,
              sorted=sorted, tuple=tuple, type=type, len=len, inst_attr='id'):
     'Make a cache key from optionally typed positional and keyword arguments'
     args = list(args)
-    if len(args) > 0:
-        if inspect.ismethod(getattr(args[0], user_function.__name__, None)):
+    if len(args) > 0 and inspect.ismethod(getattr(args[0], user_function.__name__, None)):
+    # if len(args) > 0:
+    #     if inspect.ismethod(getattr(args[0], user_function.__name__, None)):
         # if inspect.ismethod(user_function):
-            instance = args.pop(0)
-            try:
-                key = ["{c}{i}".format(c=instance.__class__, i=getattr(instance, inst_attr)), user_function.__name__]
-            except:
-                key = ["{c}{i}".format(c=instance.__class__, i=instance.__hash__()), user_function.__name__]
-        else:
-            key = ["", user_function.__name__]
+        instance = args.pop(0)
+        key = ["{c}{i}".format(
+                c=instance.__class__,
+                i=getattr(instance, inst_attr, instance.__hash__())
+            ), user_function.__name__]
+            # try:
+            #     key = ["{c}{i}".format(c=instance.__class__, i=getattr(instance, inst_attr)), user_function.__name__]
+            # except:
+            #     key = ["{c}{i}".format(c=instance.__class__, i=instance.__hash__()), user_function.__name__]
+        # else:
+        #     key = ["", user_function.__name__]
     else:
         key = ["", user_function.__name__]
     if args:
         key.append(tuple(args))
     if kwds:
-        key.append(tuple())
         sorted_items = sorted(kwds.items())
-        key[-1] += kwd_mark
-        for item in sorted_items:
-            key[-1] += item
+        tuple_ = (kwd_mark,) + tuple(item for item in sorted_items)
+        key.append(tuple_)
+    # if kwds:
+    #     key.append(tuple())
+    #     sorted_items = sorted(kwds.items())
+    #     key[-1] += kwd_mark
+    #     for item in sorted_items:
+    #         key[-1] += item
     if typed:
         key.append(tuple(type(v) for v in args))
         if kwds:
@@ -96,7 +104,7 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
         if l1_maxsize == 0:
 
             def wrapper(*args, **kwds):
-                # size limited caching that tracks accesses by recency
+                # No l1 caching, only implements shared caching and tracks accesses
                 key = make_key(user_function, args, kwds, typed, inst_attr=inst_attr)
                 result = l2wrapper(key, user_function, none_cache, *args, **kwds)
                 stats[L1_MISSES] += 1
@@ -105,7 +113,7 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
         elif l1_maxsize is None:
 
             def wrapper(*args, **kwds):
-                # size limited caching that tracks accesses by recency
+                # unlimited size l1 caching, as well as shared caching that tracks accesses
                 key = make_key(user_function, args, kwds, typed, inst_attr=inst_attr)
                 result = cache_get(key, root)   # root used here as a unique not-found sentinel
                 if result is not root:
@@ -117,11 +125,12 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
                     cache[key] = result
                 stats[L1_MISSES] += 1
                 return result
-
         else:
 
             def wrapper(*args, **kwds):
-                # size limited caching that tracks accesses by recency
+                """ size limited L1 caching that tracks accesses by recency, as well as shared
+                caching.  Tracking the least-recently-used cache is done with a linked list
+                since that allows for reordering the list relatively inexpensively."""
                 key = make_key(user_function, args, kwds, typed, inst_attr=inst_attr)
                 with lock:
                     link = cache_get(key)
@@ -174,22 +183,15 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
                     return result
             
         def l2wrapper(key, user_function, none_cache, *args, **kwds):
-            # try:
-                # logger.debug("instance:{instance}, func:{func}, key:{key}, none_cache:{none_cache}".format(instance=instance,func=user_function,key=key,none_cache=none_cache))
-            # except TypeError:
-                # logger.debug("instance:{instance}, func:{func}, key:{key}, none_cache:{none_cache}".format(instance="None",func=user_function,key=key,none_cache=none_cache))
             result = l2cache.get(key)
             if result is not None:
                 stats[L2_HITS] += 1
-                # logger.debug("Returning result from cache:{result}".format(result=result))
                 return result
 
             result = user_function(*args, **kwds)
-            # logger.debug("Returning result from function:{result}".format(result=result))
             if none_cache or result is not None:
                 stats[L2_MISSES] += 1
                 l2cache.add(key, result)
-                # logger.debug("Added result to cache from function:{result}".format(result=result))
             return result   
 
         def cache_info():
@@ -210,17 +212,12 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
         def invalidate(*args, **kwds):
             """Delete a specific cache key if it exists"""
             key = make_key(user_function, args, kwds, typed, inst_attr=inst_attr)
-            # logger.debug("generated key {key} for {s}, {uf}, {a}, {k}, {t}".format(key=key, s=self, uf=user_function,a=args,k=kwds,t=typed))
             try:
-                # logger.debug("deleting instance cache with key {key}".format(key=key))
                 del cache[key]
-                # logger.debug("done")
             except:
                 pass
             try:
-                # logger.debug("deleting shared cache with key {key}".format(key=key))
                 l2cache.delete(key)
-                # logger.debug("done")
             except:
                 pass
             
