@@ -3,7 +3,6 @@ from django.core.cache import get_cache
 from collections import namedtuple
 from functools import update_wrapper
 from threading import RLock
-import logging
 try:
     from spooky import hash128 as hash
 except:
@@ -12,7 +11,6 @@ except:
 import inspect
 
 
-logger = logging.getLogger('frontpage')
 _CacheInfo = namedtuple("CacheInfo", ["l1_hits", "l1_misses", "l2_hits", "l2_misses", "l1_maxsize", "l1_currsize"])
 
 
@@ -23,20 +21,11 @@ def _make_key(user_function, args, kwds, typed,
     'Make a cache key from optionally typed positional and keyword arguments'
     args = list(args)
     if len(args) > 0 and inspect.ismethod(getattr(args[0], user_function.__name__, None)):
-    # if len(args) > 0:
-    #     if inspect.ismethod(getattr(args[0], user_function.__name__, None)):
-        # if inspect.ismethod(user_function):
         instance = args.pop(0)
         key = ["{c}{i}".format(
                 c=instance.__class__,
                 i=getattr(instance, inst_attr, instance.__hash__())
             ), user_function.__name__]
-            # try:
-            #     key = ["{c}{i}".format(c=instance.__class__, i=getattr(instance, inst_attr)), user_function.__name__]
-            # except:
-            #     key = ["{c}{i}".format(c=instance.__class__, i=instance.__hash__()), user_function.__name__]
-        # else:
-        #     key = ["", user_function.__name__]
     else:
         key = ["", user_function.__name__]
     if args:
@@ -45,12 +34,6 @@ def _make_key(user_function, args, kwds, typed,
         sorted_items = sorted(kwds.items())
         tuple_ = (kwd_mark,) + tuple(item for item in sorted_items)
         key.append(tuple_)
-    # if kwds:
-    #     key.append(tuple())
-    #     sorted_items = sorted(kwds.items())
-    #     key[-1] += kwd_mark
-    #     for item in sorted_items:
-    #         key[-1] += item
     if typed:
         key.append(tuple(type(v) for v in args))
         if kwds:
