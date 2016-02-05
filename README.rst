@@ -28,8 +28,8 @@ cache the most recent results in a local cache and using the django cache
 framework to cache results in a shared cache.
 
 The first layer of caching is stored in a callable that wraps the function or
-or method.  As with 'functools.lru_cache' a dict is used to store the cached
-results and therefore positional and keyword arguments must be hashable. Each
+method.  As with 'functools.lru_cache' a dict is used to store the cached
+results, therefore positional and keyword arguments must be hashable. Each
 instance stores up to ``l1_maxsize`` results that vary on the arguments. The
 discarding of the LRU cached values is handled by the decorator.
 
