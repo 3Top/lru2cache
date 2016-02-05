@@ -16,6 +16,7 @@ lru2cache
   :alt: Coveralls.io
 
 ::
+::
 
   @utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
 
@@ -62,7 +63,7 @@ need to specify what attribute should be used.
 
 Installation & Configuration
 ============================
-The easiest and best way to install this is with pip
+The easiest and best way to install this is with pip::
 
     pip install lru2cache
 
@@ -98,6 +99,8 @@ Usage
 =====
 Usage is as simple as adding the decorator to a function or method as seen in
 the below examples from our test cases::
+
+    from lru2cache import utils
 
     @utils.lru2cache()
     def py_cached_func(x, y):
@@ -140,9 +143,9 @@ Clearing Shared Cache
 ---------------------
 A shared cache can easily be cleared with the following::
 
-    from django.core.cache import get_cache
+    from django.core import cache
 
-    lru2cache_cache = get_cache('l2cache')
+    lru2cache_cache = cache.get_cache('l2cache')
     lru2cache_cache.clear()
 
 
