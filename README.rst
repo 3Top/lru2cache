@@ -15,7 +15,7 @@ lru2cache
   :target: https://coveralls.io/github/3Top/lru2cache?branch=master
   :alt: Coveralls.io
 
-::
+
 ::
 
   @utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
