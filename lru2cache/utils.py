@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.core.cache import get_cache
+from django.core import cache
 from collections import namedtuple
 from functools import update_wrapper
 from threading import RLock
@@ -42,7 +42,7 @@ def _make_key(user_function, args, kwds, typed,
 
 
 
-def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='default', inst_attr='id'):
+def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id'):
     """Least-recently-used cache decorator.
 
     If *l1_maxsize* is set to None, the LRU features are disabled and the cache
@@ -67,8 +67,11 @@ def lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='defau
     #       cache_info, cache_clear, and f.__wrapped__
     # The internals of the lru_cache are encapsulated for thread safety and
     # to allow the implementation to change (including a possible C version).
+    try:
+        l2cache = cache.get_cache(l2cache_name)
+    except cache.backends.base.InvalidCacheBackendError:
+        l2cache = cache.get_cache('default')
 
-    l2cache = get_cache(l2cache_name)
 
     def decorating_function(user_function):
 

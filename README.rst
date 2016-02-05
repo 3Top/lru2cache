@@ -15,9 +15,11 @@ lru2cache
   :target: https://coveralls.io/github/3Top/lru2cache?branch=master
   :alt: Coveralls.io
 
+@utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
 
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
-2 layer caching mechanism based in part on the Python 2.7 back-port of lru_cache
+2 layer caching mechanism based in part on the Python 2.7 back-port of
+``functools.lru_cache``
 
 This was developed by `3Top, Inc. <http://www.3top.com/team>`_ for use with
 our ranking and recommendation platform, http://www.3top.com.
@@ -26,32 +28,92 @@ lru2cache is a decorator that can be used with any user function or method to
 cache the most recent results in a local cache.  It can alse be used with
 django's cache framework to cache results in a shared cache.
 
-The first layer of caching is stored in a dict within the instance of the
-function or method. Each instance stores up to maxsize results based on args
-and kwargs passed to it.  The discarding of the LRU cached values is handled by
-the lru2cache decorator.
+The first layer of caching is stored in a callable that wraps the function or
+or method.  As with 'functools.lru_cache' a dict is used to store the cached
+results and therefore positional and keyword arguments must be hashable. Each
+instance stores up to ``l1_maxsize`` results that vary on the arguments. The
+discarding of the LRU cached values is handled by the lru2cache decorator.
 
-The second layer of caching requires a shared cache that behaves the same as
+The second layer of caching requires a shared cache that and makes use of
 Django's cache framework.  In this case it is assumed that any LRU mechanism
 is handled by the shared cache backend.
 
-This arrangement allows an instance that accesses a function multiple times to
+This arrangement allows a process that accesses a function multiple times to
 retrieve the value without the expense of requesting it from a shared cache,
-while still allowing instances in different threads to access the result from
-the shared cache.
+while still allowing different processes to access the result from the shared
+cache.
 
-Arguments & Keywords
-====================
-Arguments to the cached function must be hashable. If available the spooky hash
-function will be used for generating keys, otherwise it will default back to
-the slower, hashlib.sha256.
+if ``none_cache`` is ``True`` than ``None`` results will be cached, otherwise they
+will not.
 
-Typed Arguments
----------------
-If *typed* is ``True``, arguments of different types will be cached separately.
-For example, f(3.0) and f(3) will be treated as distinct calls with
-distinct results.  In the case of methods, the first argument(self) is always
-typed.
+If ``typed`` is set to ``True``, function arguments of different types will be
+cached separately. For example, f(3) and f(3.0) will be treated as distinct
+calls with distinct results.
+
+If ``l2cache_name`` is specified it will be used as the shared cache.  Otherwise
+it will attempt to use a cache named ``l2cache`` and if not found fall back to
+``default``.
+
+``inst_attr`` is the attribute used to uniquely identify an object when wrapping
+a method.  In Django this will typically be ``id`` however if it is not you will
+need to specify what attribute should be used.
+
+Installation & Configuration
+============================
+The easiest and best way to install this is with pip
+
+    pip install lru2cache
+
+If available this package will use SpookyHash V2 as a hashing mechanism.
+Spooky is a good fast hashing algorithm that should be suitable for most uses.
+If it is not available the package will fall back to SHA-256 from the standard
+hashlib.  Because SHA-256 is a proper cryptographic hash it requires more
+computation than Spooky.  To install spooky use pip.
+
+    pip install spooky 2
+
+Once lru2cache is installed you will need to configure a shared cache as an
+l2 cache.  If you are using Django your settings file will contain something
+similar to the following in the settings file:
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+            'LOCATION': '127.0.0.1:11211',
+            'TIMEOUT': 1200,
+        },
+        'l2cache': {
+            'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+            'LOCATION': '127.0.0.1:11211',
+            'TIMEOUT': None,
+        },
+    }
+
+If you do not want to use either ``default`` or ``l2cache`` you will need to
+specify the name of the cache.
+
+Usage
+=====
+Usage is as simple as adding the decorator to a function or method as seen in
+the below examples from our test cases.
+
+    @utils.lru2cache()
+    def py_cached_func(x, y):
+        return 3 * x + y
+
+
+    class TestLRUPy(TestLRU):
+        module = utils
+        cached_func = py_cached_func,
+
+        @utils.lru2cache()
+        def cached_meth(self, x, y):
+            return 3 * x + y
+
+        @staticmethod
+        @utils.lru2cache()
+        def cached_staticmeth(x, y):
+            return 3 * x + y
 
 Cache Management
 ================
@@ -74,11 +136,11 @@ the cache and statistics associated with a function or method can be cleared wit
 
 Clearing Shared Cache
 ---------------------
-If you are using a named cache it can easily be cleared with the following::
+A shared cache can easily be cleared with the following::
 
     from django.core.cache import get_cache
 
-    lru2cache_cache = get_cache('lru2cache')
+    lru2cache_cache = get_cache('l2cache')
     lru2cache_cache.clear()
 
 
@@ -96,8 +158,8 @@ following::
 
 Refreshing the Cache
 --------------------
-This is not yet implemented as function but can be accomplished by first calling
-invalidate and the calling the wrapped function
+This is not yet implemented as a function but can be accomplished by first calling
+invalidate and then calling the function
 
 Accessing the Function without Cache
 ------------------------------------
@@ -123,7 +185,7 @@ cache. This allows the use of any shared cache supported by Django.
 
 Tests
 -----
-As a starting point incorporated most of the tests for ``lru_cache()``
-with minor changes to make them work with python 2.7 and incorporate the
+As a starting point I incorporated most of the tests for ``lru_cache()``
+with minor changes to make them work with python 2.7 and incorporated the
 l2_cache stats. We will continue to add tests to validate the additional
 functionality provided by this decorator.

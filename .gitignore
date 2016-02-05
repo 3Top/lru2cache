@@ -16,8 +16,8 @@ __pycache__/
 .installed.cfg
 *.egg
 *.swp
-build/*
-dist/*
+build/
+dist/
 
 # Installer logs
 pip-log.txt
