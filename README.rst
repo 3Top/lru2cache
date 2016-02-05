@@ -15,7 +15,9 @@ lru2cache
   :target: https://coveralls.io/github/3Top/lru2cache?branch=master
   :alt: Coveralls.io
 
-@utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
+::
+
+  @utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
 
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of
@@ -68,13 +70,13 @@ If available this package will use SpookyHash V2 as a hashing mechanism.
 Spooky is a good fast hashing algorithm that should be suitable for most uses.
 If it is not available the package will fall back to SHA-256 from the standard
 hashlib.  Because SHA-256 is a proper cryptographic hash it requires more
-computation than Spooky.  To install spooky use pip.
+computation than Spooky.  To install spooky use pip::
 
     pip install spooky 2
 
 Once lru2cache is installed you will need to configure a shared cache as an
 l2 cache.  If you are using Django your settings file will contain something
-similar to the following in the settings file:
+similar to the following in the settings file::
 
     CACHES = {
         'default': {
@@ -95,7 +97,7 @@ specify the name of the cache.
 Usage
 =====
 Usage is as simple as adding the decorator to a function or method as seen in
-the below examples from our test cases.
+the below examples from our test cases::
 
     @utils.lru2cache()
     def py_cached_func(x, y):
