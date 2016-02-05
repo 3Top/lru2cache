@@ -16,10 +16,6 @@ lru2cache
   :alt: Coveralls.io
 
 
-::
-
-  @utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
-
 A `least recently used (LRU) <http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used>`_
 2 layer caching mechanism based in part on the Python 2.7 back-port of
 ``functools.lru_cache``
@@ -28,16 +24,16 @@ This was developed by `3Top, Inc. <http://www.3top.com/team>`_ for use with
 our ranking and recommendation platform, http://www.3top.com.
 
 lru2cache is a decorator that can be used with any user function or method to
-cache the most recent results in a local cache.  It can alse be used with
-django's cache framework to cache results in a shared cache.
+cache the most recent results in a local cache and using the django cache
+framework to cache results in a shared cache.
 
 The first layer of caching is stored in a callable that wraps the function or
 or method.  As with 'functools.lru_cache' a dict is used to store the cached
 results and therefore positional and keyword arguments must be hashable. Each
 instance stores up to ``l1_maxsize`` results that vary on the arguments. The
-discarding of the LRU cached values is handled by the lru2cache decorator.
+discarding of the LRU cached values is handled by the decorator.
 
-The second layer of caching requires a shared cache that and makes use of
+The second layer of caching requires a shared cache that can make use of
 Django's cache framework.  In this case it is assumed that any LRU mechanism
 is handled by the shared cache backend.
 
@@ -45,21 +41,6 @@ This arrangement allows a process that accesses a function multiple times to
 retrieve the value without the expense of requesting it from a shared cache,
 while still allowing different processes to access the result from the shared
 cache.
-
-if ``none_cache`` is ``True`` than ``None`` results will be cached, otherwise they
-will not.
-
-If ``typed`` is set to ``True``, function arguments of different types will be
-cached separately. For example, f(3) and f(3.0) will be treated as distinct
-calls with distinct results.
-
-If ``l2cache_name`` is specified it will be used as the shared cache.  Otherwise
-it will attempt to use a cache named ``l2cache`` and if not found fall back to
-``default``.
-
-``inst_attr`` is the attribute used to uniquely identify an object when wrapping
-a method.  In Django this will typically be ``id`` however if it is not you will
-need to specify what attribute should be used.
 
 Installation & Configuration
 ============================
@@ -95,8 +76,24 @@ similar to the following in the settings file::
 If you do not want to use either ``default`` or ``l2cache`` you will need to
 specify the name of the cache.
 
+Benefits Over functools.lru_cache
+=================================
+
+**Local and Shared Cache** - Combining both types of cache is much more
+effective than either used on it's own.  The local cache eliminates the
+latency of calls to a shared cache, while the shared cache eliminates
+the expense of returning the result
+
+**The Ability to Not Cache None Results** - This may seem like a minor thing
+but in our environment it has greatly reduced the frequency of cache
+invalidations.
+
 Usage
 =====
+::
+
+  @utils.lru2cache(l1_maxsize=128, none_cache=False, typed=False, l2cache_name='l2cache', inst_attr='id')
+
 Usage is as simple as adding the decorator to a function or method as seen in
 the below examples from our test cases::
 
@@ -119,6 +116,24 @@ the below examples from our test cases::
         @utils.lru2cache()
         def cached_staticmeth(x, y):
             return 3 * x + y
+
+If ``l1_maxsize`` is set to ``None``, the LRU feature is disabled and the L1 cache
+can grow without bound. The LRU feature performs best when maxsize is a power-of-two.
+
+if ``none_cache`` is ``True`` than ``None`` results will be cached, otherwise they
+will not.
+
+If ``typed`` is set to ``True``, function arguments of different types will be
+cached separately. For example, f(3) and f(3.0) will be treated as distinct
+calls with distinct results.
+
+If ``l2cache_name`` is specified it will be used as the shared cache.  Otherwise
+it will attempt to use a cache named ``l2cache`` and if not found fall back to
+``default``.
+
+``inst_attr`` is the attribute used to uniquely identify an object when wrapping
+a method.  In Django this will typically be ``id`` however if it is not you will
+need to specify what attribute should be used.
 
 Cache Management
 ================
@@ -190,7 +205,7 @@ cache. This allows the use of any shared cache supported by Django.
 
 Tests
 -----
-As a starting point I incorporated most of the tests for ``lru_cache()``
-with minor changes to make them work with python 2.7 and incorporated the
-l2_cache stats. We will continue to add tests to validate the additional
-functionality provided by this decorator.
+As a starting point I incorporated most of the tests for
+``functools.lru_cache()`` with minor changes to make them work with python 2.7
+and incorporated the l2_cache stats. We will continue to add tests to validate
+the additional functionality provided by this decorator.
